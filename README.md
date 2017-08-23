@@ -7,3 +7,8 @@ With this tool you can easily synchronize all the content you have in your ArcGI
 This project uses the [ArcGIS API for Python](https://developers.arcgis.com/python/): 
 
 > a Python library for working with maps and geospatial data. It provides simple and efficient tools for sophisticated vector and raster analysis, geocoding, map making, routing and directions, as well as for organizing and managing a GIS with users, groups and information items.
+
+# Roadmap
+1. Cloning the folder structure of the ArcGIS Organization account into a folder structure of the OS (Windows, Linux, MacOS)
+2. Basic read-only, ie, download only syncronization script between ArcGIS and a folder structure in the OS. This process will only download meaningful file types such as PDFs, CSV, SD (Service Definition), Excel files, etc..
+2. Full sychronization service whereby any new file inside a folder in the System OS, will be automatically uploaded to the ArcGIS Organization user account.
