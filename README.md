@@ -6,4 +6,4 @@ With this tool you can easily synchronize all the content you have in your ArcGI
 
 This project uses the [ArcGIS API for Python](https://developers.arcgis.com/python/): 
 
-> "a Python library for working with maps and geospatial data. It provides simple and efficient tools for sophisticated vector and raster analysis, geocoding, map making, routing and directions, as well as for organizing and managing a GIS with users, groups and information items".
+> a Python library for working with maps and geospatial data. It provides simple and efficient tools for sophisticated vector and raster analysis, geocoding, map making, routing and directions, as well as for organizing and managing a GIS with users, groups and information items.
