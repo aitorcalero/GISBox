@@ -29,21 +29,20 @@ os.mkdir('Box')
 
 
 # we recursively loop through each folder downloading the items type given in file_types
-def CreateFolderStructure():
-    flds = user.folders
-    print('\nYou have **' + str(len(user.folders)) + '** folders in your ArcGIS Organization\n')
+def CreateFolderStructure(_user):
+    flds = _user.folders
+    print('\nYou have **' + str(len(_user.folders)) + '** folders in your ArcGIS Organization\n')
     # listing documents in the user root folder
-    root_folder_items = user.items()
+    root_folder_items = _user.items()
     n = 0
     print("Total number of items in root folder: " + str(len(root_folder_items)))
 
     # list of supported file types to retrieve from the user folders
-    # file_types = ['CSV', 'Microsoft Excel', 'KML', 'PDF', 'ZIP', 'Service Definition']
-    file_types = ['CSV', 'Service Definition', 'KML', 'ZIP']
+    file_types = ['CSV', 'Service Definition', 'KML', 'ZIP', 'Shapefile', 'Image Collection']
 
     # Listing & downloading items in the root folder
     for root_folder_item in root_folder_items:
-        if (root_folder_item.type in file_types):
+        if root_folder_item.type in file_types:
             n += 1
             item_path = str(root_folder_item.get_data())
             file_extension = item_path.split(".")[1]
@@ -55,7 +54,7 @@ def CreateFolderStructure():
         # print((carpeta))
         print('Name: ' + fld['title'] + '\n')
         os.mkdir(arcgisboxdir + fld['title'])
-        flds = user.items(folder=fld['title'])
+        flds = _user.items(folder=fld['title'])
         print('You have ' + str(len(flds)) + ' items inside your folder\n')
         for i in flds:
             if i.type in file_types:
@@ -68,4 +67,4 @@ def CreateFolderStructure():
     print('\tDownloadable elements:\t' + str(n))
 
 
-CreateFolderStructure()
+CreateFolderStructure(user)
