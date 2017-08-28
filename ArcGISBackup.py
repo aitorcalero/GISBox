@@ -38,13 +38,13 @@ def CreateFolderStructure(_user):
     print("Total number of items in root folder: " + str(len(root_folder_items)))
 
     # list of supported file types to retrieve from the user folders
-    file_types = ['CSV', 'Service Definition', 'KML', 'ZIP', 'Shapefile', 'Image Collection']
+    file_types = ['CSV', 'Service Definition', 'KML', 'ZIP', 'Shapefile', 'Image Collection','PDF','Microsoft Excel']
 
     # Listing & downloading items in the root folder
     for root_folder_item in root_folder_items:
         if root_folder_item.type in file_types:
             n += 1
-            item_path = str(root_folder_item.get_data())
+            item_path = str(root_folder_item.download())
             file_extension = item_path.split(".")[1]
             os.rename(str(item_path), arcgisboxdir + root_folder_item.title + "." + file_extension)
             print(root_folder_item.title + '\t\t(' + root_folder_item.type + ')\n')
@@ -59,7 +59,7 @@ def CreateFolderStructure(_user):
         for i in flds:
             if i.type in file_types:
                 n += 1
-                item_path = str(i.get_data())
+                item_path = str(i.download())
                 file_extension = item_path.split(".")[1]
                 os.rename(str(item_path), arcgisboxdir + fld['title'] + "/" + i.title + "." + file_extension)
                 print('\t\t' + i.title + '\t\t(' + i.type + ')\n')
