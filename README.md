@@ -10,7 +10,7 @@ This project uses the [ArcGIS API for Python](https://developers.arcgis.com/pyth
 
 # How to run the notebooks
 
-To run these notebooks you need to intall [Jupyter](http://jupyter.org/) and you also need the [ArcGIS API for Python](https://developers.arcgis.com/python/). The easiest way to have both properly installed and configured is to follow [this manual](https://blogs.esri.com/esri/arcgis/2017/07/05/three-ways-to-get-jupyter-notebooks-and-the-arcgis-api-for-python/) using the third option based on [Anaconda](https://www.anaconda.com/what-is-anaconda/).
+To run these notebooks you need to intall [Jupyter](http://jupyter.org/) and you also need the [ArcGIS API for Python](https://developers.arcgis.com/python/). The easiest way to have both properly installed and configured is to follow [this manual](https://blogs.esri.com/esri/arcgis/2017/07/05/three-ways-to-get-jupyter-notebooks-and-the-arcgis-api-for-python/), using the third option given there, based on [Anaconda](https://www.anaconda.com/what-is-anaconda/).
 
 # Roadmap
 1. Cloning the folder structure of the ArcGIS Organization account into a folder structure of the OS (Windows, Linux, MacOS)
