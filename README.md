@@ -8,6 +8,10 @@ This project uses the [ArcGIS API for Python](https://developers.arcgis.com/pyth
 
 > a Python library for working with maps and geospatial data. It provides simple and efficient tools for sophisticated vector and raster analysis, geocoding, map making, routing and directions, as well as for organizing and managing a GIS with users, groups and information items.
 
+# How to run the notebooks
+
+To run these notebooks you need to intall [Jupyter](http://jupyter.org/) and you also need the [ArcGIS API for Python](https://developers.arcgis.com/python/). The easiest way to have both properly installed and configured is to follow [this manual](https://blogs.esri.com/esri/arcgis/2017/07/05/three-ways-to-get-jupyter-notebooks-and-the-arcgis-api-for-python/), using the third option given there, based on [Anaconda](https://www.anaconda.com/what-is-anaconda/).
+
 # Roadmap
 1. Cloning the folder structure of the ArcGIS Organization account into a folder structure of the OS (Windows, Linux, MacOS)
 2. Basic read-only, ie, download only syncronization script between ArcGIS and a folder structure in the OS. This process will only download meaningful file types such as PDFs, CSV, SD (Service Definition), Excel files, etc..
