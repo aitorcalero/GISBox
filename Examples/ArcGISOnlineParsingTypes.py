@@ -28,12 +28,12 @@ ListFileTypes = GetFileTypes(
     'http://doc.arcgis.com/en/arcgis-online/reference/supported-items.htm')
 
 for type in ListFileTypes:
-    logging.info('\t'+type)
+    logging.info('\t'+type+'\n')
 
 ListExtensionTypes = list(set(ListExtensionTypes))
 
 for type in ListExtensionTypes:
-    logging.info('\t'+type)
+    logging.info('\t'+type+'\n')
 
 
 logging.info('There are {} different types of elements that you can store in ArcGIS Online'
