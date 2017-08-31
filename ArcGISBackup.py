@@ -41,7 +41,7 @@ os.mkdir(ARCGISBOXDIR)
 
 
 # we recursively loop through each folder downloading the items type given in file_types
-def createfolderstructure(_user):
+def create_folder_structure(_user):
     """ This function replicate the folder structure of the user account """
     flds = _user.folders
     logging.info(f"\nYou have ** {str(len(_user.folders))} ** "
@@ -49,7 +49,7 @@ def createfolderstructure(_user):
     # listing documents in the user root folder
     root_folder_items = _user.items()
     _n = 0
-    logging.info("Total number of items in root folder: {}".format(str(len(root_folder_items))))
+    logging.info(f"Total number of items in root folder: {str(len(root_folder_items))}")
 
     # list of supported file types to retrieve from the user folders
     # TODO Read file_types from a external file or directly form a public Esri URL
@@ -63,29 +63,31 @@ def createfolderstructure(_user):
             item_path = str(root_folder_item.download())
             file_extension = item_path.rsplit(".", maxsplit=1)[1]
             file_destination = os.path.normpath("".join([ARCGISBOXDIR, '/',
-                                                        root_folder_item.title, ".", file_extension]))
+                                                         root_folder_item.title,
+                                                         ".", file_extension]))
             os.rename(str(item_path), file_destination)
-            logging.info('{}\t\t({})\n'.format(root_folder_item.title, root_folder_item.type))
+            logging.info(f"{root_folder_item.title}\t\t({root_folder_item.type})\n")
 
     # Listing documents inside other user folders
     for fld in flds:
         # logging.info((carpeta))
-        logging.info('Name: {}\n'.format(fld['title']))
+        logging.info(f"Name: {fld['title']}\n")
         os.mkdir(os.path.normpath("".join([ARCGISBOXDIR, "/", fld['title']])))
         flds = _user.items(folder=fld['title'])
-        logging.info('You have {} items inside your folder\n'.format(str(len(flds))))
+        logging.info(f'You have {format(str(len(flds)))} items inside your folder\n')
         for i in flds:
             if i.type in file_types:
                 _n += 1
                 item_path = str(i.download())
                 file_extension = item_path.rsplit(".", maxsplit=1)[1]
-                file_destination = os.path.normpath("".join([
-                    ARCGISBOXDIR, "/", fld['title'], "/", i.title, ".", file_extension]))
+                file_destination = os.path.normpath("".join([ARCGISBOXDIR, "/",
+                                                             fld['title'], "/", i.title,
+                                                             ".", file_extension]))
                 logging.info(file_destination)
                 os.rename(str(item_path), file_destination)
-                logging.info('\t\t {} \t\t( {} )\n'.format(i.title, i.type))
+                logging.info(f"\t\t {i.title} \t\t( {i.type} )\n")
 
-    logging.info('\tDownloadable elements:\t {}'.format(str(_n)))
+    logging.info(f"\tDownloadable elements:\t {str(_n)}")
 
 
-createfolderstructure(USER)
+create_folder_structure(USER)
