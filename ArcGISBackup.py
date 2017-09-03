@@ -12,8 +12,13 @@ logging.basicConfig(level=logging.INFO,
 
 # we open a text file where my credentials are stored
 # this file must be in the same directory
-with open('credentials.txt') as f:
-    URL, USR, P, BOXDIR = f.read().split('\n')
+URL = 'https://www.arcgis.com'
+try:
+    with open('credentials.txt') as f:
+        USR, P, BOXDIR = f.read().split('\n')
+except ValueError:
+    print(ValueError)
+    pass
 
 
 # we connect to my arcgis account using the previous credentials
