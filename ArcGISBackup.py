@@ -20,19 +20,14 @@ except ValueError:
     print(ValueError)
     pass
 
-
 # we connect to my arcgis account using the previous credentials
-def connect_to_arcgis(_url, _usr, _pwd):
-    """ Creates the connection to the ArcGIS account and returns a GIS object """
-    try:
-        _g = GIS(_url, _usr, _pwd)
-        logging.info(f'Connected successfully to the {_g.properties.name} organization\n')
-        return _g
-    except ValueError:
-        logging.error(ValueError.args)
+def connect_to_arcgis(_profile):
+    gis = GIS(profile=_profile)
+    print('Connected successfully to the [' + gis.properties.name + '] organization\n')
+    return gis
 
 
-GIS = connect_to_arcgis(URL, USR, P)
+GIS = connect_to_arcgis('geogeeks')
 USER = User(GIS, USR, userdict=None)
 
 ARCGISBOXDIR = os.path.normpath(str(Path.home()) + BOXDIR)
