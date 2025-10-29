@@ -1,4 +1,19 @@
-""" This module creates a backup of an ArcGIS Online Organization """
+# Este archivo ha sido refactorizado y reemplazado por gisbox_sync.py
+# El código original ha sido movido a la clase GISBoxSync para un diseño modular.
+
+from gisbox_sync import GISBoxSync
+import logging
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
+if __name__ == "__main__":
+    try:
+        sync_tool = GISBoxSync()
+        sync_tool.sync_down()
+    except Exception as e:
+        logging.error(f"Error al ejecutar la sincronización: {e}")
 import os
 import shutil
 from pathlib import Path

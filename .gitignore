@@ -1,9 +1,21 @@
+# Archivos y directorios a ignorar en GISBox
 
+# Entorno de desarrollo
 .ipynb_checkpoints/
-/credentials.txt
 .idea/
+*.pyc
+
+# Archivos de credenciales y configuración
+credentials.txt
+.env
+
+# Directorios de sincronización y datos generados
 Box/
+GISBox_Sync/
+__pycache__/
+
+# Archivos de ejemplo generados
 /Examples/prueba.pdf
 /Examples/test-pdf.txt
-/Examples/
-!/Examples/
+/Examples/*.zip
+/Examples/*.kml

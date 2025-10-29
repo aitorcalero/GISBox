@@ -1,0 +1,8 @@
+# Dependencias identificadas en el análisis del proyecto GISBox
+# Se recomienda usar la última versión estable de arcgis para asegurar compatibilidad.
+arcgis>=2.0.0
+beautifulsoup4
+requests
+watchdog
+apscheduler
+rarfile
