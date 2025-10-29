@@ -6,3 +6,5 @@ requests
 watchdog
 apscheduler
 rarfile
+pytest
+pytest-mock

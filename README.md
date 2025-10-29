@@ -6,6 +6,28 @@ Este proyecto utiliza la [ArcGIS API for Python](https://developers.arcgis.com/p
 
 ## 🚀 Funcionalidades Actualizadas
 
+El proyecto ha sido mejorado con un sistema de **pruebas unitarias** robusto utilizando `pytest` y una configuración de **logging** más detallada y centralizada.
+
+### Logging Mejorado
+
+Ahora, el logging utiliza un formato estructurado (`%(asctime)s - %(name)s - %(levelname)s - %(message)s`) y loggers con nombre (`GISBoxSync`, `GISBoxMonitor`), lo que facilita el seguimiento de los eventos y la depuración.
+
+### Pruebas Unitarias
+
+Se ha creado una suite de pruebas unitarias para asegurar la fiabilidad de las clases principales:
+- `tests/test_gisbox_sync.py`: Pruebas para la conexión, preparación del directorio y la lógica de descarga de `GISBoxSync`.
+- `tests/test_gisbox_monitor.py`: Pruebas para la lógica de monitorización de archivos, subida y eliminación de elementos en ArcGIS de `GISBoxMonitor`.
+
+Para ejecutar las pruebas:
+```bash
+pip install pytest pytest-mock
+pytest
+```
+
+---
+
+## 🛠️ Configuración y Requisitos
+
 El proyecto ha sido refactorizado para ofrecer dos modos de operación:
 
 1.  **Modo Backup/Descarga (`gisbox_sync.py`):** Sincronización de solo lectura. Descarga todo el contenido de ArcGIS (elementos de tipo archivo) a la estructura de carpetas local.

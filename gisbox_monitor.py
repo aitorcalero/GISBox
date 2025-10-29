@@ -8,9 +8,15 @@ from arcgis.gis import GIS
 from dotenv import load_dotenv
 
 # Configuración de Logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+# Configuración de Logging
+logger = logging.getLogger('GISBoxMonitor')
+logger.setLevel(logging.INFO)
+# Configuración del handler (para que solo se configure una vez)
+if not logger.handlers:
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
 class UploadHandler(FileSystemEventHandler):
     """
@@ -21,7 +27,7 @@ class UploadHandler(FileSystemEventHandler):
         self.gis = gis
         self.local_sync_dir = Path(local_sync_dir)
         self.user = self.gis.users.me
-        logging.info(f"Monitorizando cambios en: {self.local_sync_dir}")
+        logger.info(f"Monitorizando cambios en: {self.local_sync_dir}")
 
     def _get_arcgis_folder(self, src_path):
         """
@@ -57,14 +63,14 @@ class UploadHandler(FileSystemEventHandler):
             if existing_items:
                 # Actualizar elemento existente
                 item = existing_items[0]
-                logging.info(f"  [ACTUALIZANDO] {item.title}...")
+                logger.info(f"  [ACTUALIZANDO] {item.title}...")
                 item.update(item_properties=item_properties, data=src_path)
-                logging.info(f"  [ACTUALIZADO] {item.title} en ArcGIS.")
+                logger.info(f"  [ACTUALIZADO] {item.title} en ArcGIS.")
             else:
                 # Añadir nuevo elemento
-                logging.info(f"  [SUBIENDO] Nuevo archivo: {file_path.name}...")
+                logger.info(f"  [SUBIENDO] Nuevo archivo: {file_path.name}...")
                 item = self.gis.content.add(item_properties=item_properties, data=src_path, folder=folder_name)
-                logging.info(f"  [SUBIDO] {item.title} a ArcGIS.")
+                logger.info(f"  [SUBIDO] {item.title} a ArcGIS.")
 
     def _delete_item(self, src_path):
         """
@@ -86,9 +92,9 @@ class UploadHandler(FileSystemEventHandler):
         
         if existing_items:
             item = existing_items[0]
-            logging.info(f"  [ELIMINANDO] {item.title} de ArcGIS...")
+            logger.info(f"  [ELIMINANDO] {item.title} de ArcGIS...")
             item.delete()
-            logging.info(f"  [ELIMINADO] {item.title} de ArcGIS.")
+            logger.info(f"  [ELIMINADO] {item.title} de ArcGIS.")
 
     def on_created(self, event):
         if not event.is_directory:
@@ -134,7 +140,7 @@ class GISBoxMonitor:
         else:
             gis = GIS(self.url)
             
-        logging.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
+        logger.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
         return gis
 
     def start_monitoring(self):
@@ -146,7 +152,7 @@ class GISBoxMonitor:
         observer.schedule(event_handler, self.local_sync_dir, recursive=True)
         observer.start()
         
-        logging.info("GISBox Monitor iniciado. Presiona CTRL+C para detener.")
+        logger.info("GISBox Monitor iniciado. Presiona CTRL+C para detener.")
         
         try:
             while True:
@@ -154,18 +160,18 @@ class GISBoxMonitor:
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
-        logging.info("GISBox Monitor detenido.")
+        logger.info("GISBox Monitor detenido.")
 
 if __name__ == "__main__":
     try:
         # Asegurarse de que el directorio de sincronización existe antes de empezar a monitorizar
         if not Path(os.getenv("LOCAL_SYNC_DIR")).exists():
-            logging.warning("El directorio local no existe. Por favor, ejecute primero gisbox_sync.py para la sincronización inicial.")
+            logger.warning("El directorio local no existe. Por favor, ejecute primero gisbox_sync.py para la sincronización inicial.")
         
         monitor = GISBoxMonitor()
         monitor.start_monitoring()
         
     except ValueError as e:
-        logging.error(f"Error de configuración: {e}. Por favor, complete el archivo .env.")
+        logger.error(f"Error de configuración: {e}. Por favor, complete el archivo .env.")
     except Exception as e:
-        logging.error(f"Ocurrió un error durante la monitorización: {e}")
+        logger.error(f"Ocurrió un error durante la monitorización: {e}")

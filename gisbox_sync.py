@@ -6,9 +6,15 @@ from arcgis.gis import GIS, User
 from dotenv import load_dotenv
 
 # Configuración de Logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+# Configuración de Logging
+logger = logging.getLogger('GISBoxSync')
+logger.setLevel(logging.INFO)
+# Configuración del handler (para que solo se configure una vez)
+if not logger.handlers:
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
 class GISBoxSync:
     """
@@ -48,7 +54,7 @@ class GISBoxSync:
             # Conexión anónima o con prompt de credenciales
             gis = GIS(self.url)
             
-        logging.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
+        logger.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
         return gis
 
     def _prepare_local_directory(self):
@@ -58,11 +64,11 @@ class GISBoxSync:
         """
         local_path = Path(self.local_sync_dir)
         if local_path.exists():
-            logging.warning(f"Eliminando contenido anterior en: {self.local_sync_dir}")
+            logger.warning(f"Eliminando contenido anterior en: {self.local_sync_dir}")
             shutil.rmtree(local_path)
         
         local_path.mkdir(parents=True, exist_ok=True)
-        logging.info(f"Directorio de sincronización preparado: {self.local_sync_dir}")
+        logger.info(f"Directorio de sincronización preparado: {self.local_sync_dir}")
 
     def download_items(self, folder_name=None):
         """
@@ -74,10 +80,10 @@ class GISBoxSync:
         if folder_name:
             local_folder_path = Path(self.local_sync_dir) / folder_name
             local_folder_path.mkdir(exist_ok=True)
-            logging.info(f"Procesando carpeta de ArcGIS: {folder_name}")
+            logger.info(f"Procesando carpeta de ArcGIS: {folder_name}")
         else:
             local_folder_path = Path(self.local_sync_dir)
-            logging.info("Procesando carpeta raíz de ArcGIS")
+            logger.info("Procesando carpeta raíz de ArcGIS")
 
         for item in items:
             if item.type in self.file_types:
@@ -125,11 +131,11 @@ class GISBoxSync:
                     else:
                          os.rename(temp_path, final_path)
                          
-                    logging.info(f"  [DESCARGADO] {item.title} ({item.type}) a {final_path.name}")
+                    logger.info(f"  [DESCARGADO] {item.title} ({item.type}) a {final_path.name}")
                     download_count += 1
                     
                 except Exception as e:
-                    logging.error(f"Error al descargar {item.title}: {e}")
+                    logger.error(f"Error al descargar {item.title}: {e}")
 
         return download_count
 
@@ -151,7 +157,7 @@ class GISBoxSync:
             count = self.download_items(folder_name=folder_name)
             total_count += count
             
-        logging.info(f"\nSincronización de descarga completada. Total de elementos descargados: {total_count}")
+        logger.info(f"\nSincronización de descarga completada. Total de elementos descargados: {total_count}")
         
         return total_count
 
@@ -165,6 +171,6 @@ if __name__ == "__main__":
         sync_tool.sync_down()
         
     except ValueError as e:
-        logging.error(f"Error de configuración: {e}. Por favor, complete el archivo .env.")
+        logger.error(f"Error de configuración: {e}. Por favor, complete el archivo .env.")
     except Exception as e:
-        logging.error(f"Ocurrió un error durante la sincronización: {e}")
+        logger.error(f"Ocurrió un error durante la sincronización: {e}")
