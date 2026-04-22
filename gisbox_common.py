@@ -3,8 +3,6 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 LOG_DATEFMT = '%Y-%m-%d %H:%M:%S'
 
@@ -16,6 +14,24 @@ class GISBoxConfig:
     password: str | None
     profile: str | None
     local_sync_dir: str
+
+
+def load_dotenv(dotenv_path: Path) -> None:
+    """Carga un archivo .env sencillo en os.environ sin sobrescribir variables existentes."""
+    if not dotenv_path.exists():
+        return
+
+    for raw_line in dotenv_path.read_text(encoding='utf-8').splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+
+        key, value = line.split('=', 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+
+        if key and key not in os.environ:
+            os.environ[key] = value
 
 
 def load_config(base_dir: Path) -> GISBoxConfig:
