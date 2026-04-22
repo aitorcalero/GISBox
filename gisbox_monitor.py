@@ -3,8 +3,7 @@ import time
 from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from arcgis.gis import GIS
-from gisbox_common import get_logger, load_config
+from gisbox_common import connect_to_arcgis, get_logger, load_config
 
 logger = get_logger('GISBoxMonitor')
 
@@ -106,13 +105,13 @@ class GISBoxMonitor:
     """
     def __init__(self):
         # Cargar variables de entorno
-        config = load_config(Path(__file__).parent)
+        self.config = load_config(Path(__file__).parent)
 
-        self.url = config.url
-        self.username = config.username
-        self.password = config.password
-        self.profile = config.profile
-        self.local_sync_dir = config.local_sync_dir
+        self.url = self.config.url
+        self.username = self.config.username
+        self.password = self.config.password
+        self.profile = self.config.profile
+        self.local_sync_dir = self.config.local_sync_dir
 
         self.gis = self._connect_to_arcgis()
         
@@ -120,13 +119,8 @@ class GISBoxMonitor:
         """
         Establece la conexión con la organización de ArcGIS.
         """
-        if self.profile:
-            gis = GIS(profile=self.profile)
-        elif self.username and self.password:
-            gis = GIS(self.url, self.username, self.password)
-        else:
-            gis = GIS(self.url)
-            
+        gis = connect_to_arcgis(self.config)
+
         logger.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
         return gis
 

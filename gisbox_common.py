@@ -3,6 +3,8 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+from arcgis.gis import GIS
+
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 LOG_DATEFMT = '%Y-%m-%d %H:%M:%S'
 
@@ -49,6 +51,15 @@ def load_config(base_dir: Path) -> GISBoxConfig:
         profile=os.getenv('ARCGIS_PROFILE'),
         local_sync_dir=local_sync_dir,
     )
+
+
+def connect_to_arcgis(config: GISBoxConfig) -> GIS:
+    """Establece conexión a ArcGIS priorizando perfil sobre credenciales directas."""
+    if config.profile:
+        return GIS(profile=config.profile)
+    if config.username and config.password:
+        return GIS(config.url, config.username, config.password)
+    return GIS(config.url)
 
 
 def get_logger(name: str) -> logging.Logger:

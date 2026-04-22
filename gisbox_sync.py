@@ -1,8 +1,7 @@
 import os
 import shutil
 from pathlib import Path
-from arcgis.gis import GIS, User
-from gisbox_common import get_logger, load_config
+from gisbox_common import connect_to_arcgis, get_logger, load_config
 
 logger = get_logger('GISBoxSync')
 
@@ -13,13 +12,13 @@ class GISBoxSync:
     """
     def __init__(self):
         # Cargar variables de entorno desde .env
-        config = load_config(Path(__file__).parent)
+        self.config = load_config(Path(__file__).parent)
 
-        self.url = config.url
-        self.username = config.username
-        self.password = config.password
-        self.profile = config.profile
-        self.local_sync_dir = config.local_sync_dir
+        self.url = self.config.url
+        self.username = self.config.username
+        self.password = self.config.password
+        self.profile = self.config.profile
+        self.local_sync_dir = self.config.local_sync_dir
 
         self.gis = self._connect_to_arcgis()
         self.user = self.gis.users.get(self.username) if self.username else self.gis.users.me
@@ -33,14 +32,8 @@ class GISBoxSync:
         Establece la conexión con la organización de ArcGIS.
         Prioriza la conexión por perfil si está disponible.
         """
-        if self.profile:
-            gis = GIS(profile=self.profile)
-        elif self.username and self.password:
-            gis = GIS(self.url, self.username, self.password)
-        else:
-            # Conexión anónima o con prompt de credenciales
-            gis = GIS(self.url)
-            
+        gis = connect_to_arcgis(self.config)
+
         logger.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
         return gis
 
@@ -150,9 +143,7 @@ class GISBoxSync:
 
 if __name__ == "__main__":
     try:
-        # Se requiere instalar python-dotenv: pip install python-dotenv
         # Se requiere instalar arcgis: pip install arcgis
-        
         # El usuario debe completar el archivo .env con sus credenciales
         sync_tool = GISBoxSync()
         sync_tool.sync_down()

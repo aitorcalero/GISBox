@@ -46,8 +46,8 @@ def mock_gis_monitor(mocker):
     mock_user.username = "test_user"
     mock_gis.users.me = mock_user
     
-    mocker.patch('gisbox_monitor.GIS', return_value=mock_gis)
-    
+    mocker.patch('gisbox_monitor.connect_to_arcgis', return_value=mock_gis)
+
     return mock_gis, mock_user
 
 # --- Pruebas para UploadHandler ---

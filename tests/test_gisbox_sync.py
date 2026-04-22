@@ -45,9 +45,8 @@ def mock_gis_user(mocker):
     
     mock_gis.users.get.return_value = mock_user
     
-    mocker.patch('gisbox_sync.GIS', return_value=mock_gis)
-    mocker.patch('gisbox_sync.User', return_value=mock_user)
-    
+    mocker.patch('gisbox_sync.connect_to_arcgis', return_value=mock_gis)
+
     return mock_gis, mock_user
 
 # Test 1: Inicialización correcta
