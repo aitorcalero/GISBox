@@ -12,7 +12,7 @@ from gisbox_monitor import GISBoxMonitor, UploadHandler, logger
 @pytest.fixture
 def mock_monitor_env(mocker):
     # Mockear la carga de variables de entorno
-    mocker.patch('gisbox_monitor.load_dotenv')
+    mocker.patch('gisbox_common.load_dotenv')
     mocker.patch.dict(os.environ, {
         "ARCGIS_URL": "https://test.arcgis.com",
         "ARCGIS_USERNAME": "test_user",
@@ -46,8 +46,8 @@ def mock_gis_monitor(mocker):
     mock_user.username = "test_user"
     mock_gis.users.me = mock_user
     
-    mocker.patch('gisbox_monitor.GIS', return_value=mock_gis)
-    
+    mocker.patch('gisbox_monitor.connect_to_arcgis', return_value=mock_gis)
+
     return mock_gis, mock_user
 
 # --- Pruebas para UploadHandler ---

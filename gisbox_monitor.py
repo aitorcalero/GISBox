@@ -1,22 +1,11 @@
 import os
 import time
-import logging
 from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from arcgis.gis import GIS
-from dotenv import load_dotenv
+from gisbox_common import connect_to_arcgis, get_logger, load_config
 
-# Configuración de Logging
-# Configuración de Logging
-logger = logging.getLogger('GISBoxMonitor')
-logger.setLevel(logging.INFO)
-# Configuración del handler (para que solo se configure una vez)
-if not logger.handlers:
-    ch = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+logger = get_logger('GISBoxMonitor')
 
 class UploadHandler(FileSystemEventHandler):
     """
@@ -116,16 +105,13 @@ class GISBoxMonitor:
     """
     def __init__(self):
         # Cargar variables de entorno
-        load_dotenv(Path(__file__).parent / ".env")
-        
-        self.url = os.getenv("ARCGIS_URL")
-        self.username = os.getenv("ARCGIS_USERNAME")
-        self.password = os.getenv("ARCGIS_PASSWORD")
-        self.profile = os.getenv("ARCGIS_PROFILE")
-        self.local_sync_dir = os.getenv("LOCAL_SYNC_DIR")
-        
-        if not self.local_sync_dir:
-            raise ValueError("LOCAL_SYNC_DIR no está configurado en el archivo .env")
+        self.config = load_config(Path(__file__).parent)
+
+        self.url = self.config.url
+        self.username = self.config.username
+        self.password = self.config.password
+        self.profile = self.config.profile
+        self.local_sync_dir = self.config.local_sync_dir
 
         self.gis = self._connect_to_arcgis()
         
@@ -133,13 +119,8 @@ class GISBoxMonitor:
         """
         Establece la conexión con la organización de ArcGIS.
         """
-        if self.profile:
-            gis = GIS(profile=self.profile)
-        elif self.username and self.password:
-            gis = GIS(self.url, self.username, self.password)
-        else:
-            gis = GIS(self.url)
-            
+        gis = connect_to_arcgis(self.config)
+
         logger.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
         return gis
 

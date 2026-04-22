@@ -59,6 +59,16 @@ LOCAL_SYNC_DIR=/ruta/a/tu/carpeta/local/GISBox_Sync
 
 ## ⚙️ Uso
 
+## 🧪 CLI MVP (recomendado)
+
+Se añadió una CLI mínima para operar el proyecto desde un solo punto de entrada:
+
+```bash
+python gisbox_cli.py check-config
+python gisbox_cli.py sync-down
+python gisbox_cli.py monitor
+```
+
 ### 1. Sincronización Inicial (Descarga)
 
 Ejecuta el script de sincronización para descargar el contenido de ArcGIS a tu directorio local:

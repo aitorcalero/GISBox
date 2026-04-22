@@ -1,20 +1,9 @@
 import os
 import shutil
-import logging
 from pathlib import Path
-from arcgis.gis import GIS, User
-from dotenv import load_dotenv
+from gisbox_common import connect_to_arcgis, get_logger, load_config
 
-# Configuración de Logging
-# Configuración de Logging
-logger = logging.getLogger('GISBoxSync')
-logger.setLevel(logging.INFO)
-# Configuración del handler (para que solo se configure una vez)
-if not logger.handlers:
-    ch = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+logger = get_logger('GISBoxSync')
 
 class GISBoxSync:
     """
@@ -23,16 +12,13 @@ class GISBoxSync:
     """
     def __init__(self):
         # Cargar variables de entorno desde .env
-        load_dotenv(Path(__file__).parent / ".env")
-        
-        self.url = os.getenv("ARCGIS_URL")
-        self.username = os.getenv("ARCGIS_USERNAME")
-        self.password = os.getenv("ARCGIS_PASSWORD")
-        self.profile = os.getenv("ARCGIS_PROFILE")
-        self.local_sync_dir = os.getenv("LOCAL_SYNC_DIR")
-        
-        if not self.local_sync_dir:
-            raise ValueError("LOCAL_SYNC_DIR no está configurado en el archivo .env")
+        self.config = load_config(Path(__file__).parent)
+
+        self.url = self.config.url
+        self.username = self.config.username
+        self.password = self.config.password
+        self.profile = self.config.profile
+        self.local_sync_dir = self.config.local_sync_dir
 
         self.gis = self._connect_to_arcgis()
         self.user = self.gis.users.get(self.username) if self.username else self.gis.users.me
@@ -46,14 +32,8 @@ class GISBoxSync:
         Establece la conexión con la organización de ArcGIS.
         Prioriza la conexión por perfil si está disponible.
         """
-        if self.profile:
-            gis = GIS(profile=self.profile)
-        elif self.username and self.password:
-            gis = GIS(self.url, self.username, self.password)
-        else:
-            # Conexión anónima o con prompt de credenciales
-            gis = GIS(self.url)
-            
+        gis = connect_to_arcgis(self.config)
+
         logger.info(f'Conectado exitosamente a la organización: [{gis.properties.name}]')
         return gis
 
@@ -163,9 +143,7 @@ class GISBoxSync:
 
 if __name__ == "__main__":
     try:
-        # Se requiere instalar python-dotenv: pip install python-dotenv
         # Se requiere instalar arcgis: pip install arcgis
-        
         # El usuario debe completar el archivo .env con sus credenciales
         sync_tool = GISBoxSync()
         sync_tool.sync_down()
