@@ -1,22 +1,12 @@
 import os
 import time
-import logging
 from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from arcgis.gis import GIS
-from dotenv import load_dotenv
+from gisbox_common import get_logger, load_config
 
-# Configuración de Logging
-# Configuración de Logging
-logger = logging.getLogger('GISBoxMonitor')
-logger.setLevel(logging.INFO)
-# Configuración del handler (para que solo se configure una vez)
-if not logger.handlers:
-    ch = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+logger = get_logger('GISBoxMonitor')
 
 class UploadHandler(FileSystemEventHandler):
     """
@@ -116,16 +106,13 @@ class GISBoxMonitor:
     """
     def __init__(self):
         # Cargar variables de entorno
-        load_dotenv(Path(__file__).parent / ".env")
-        
-        self.url = os.getenv("ARCGIS_URL")
-        self.username = os.getenv("ARCGIS_USERNAME")
-        self.password = os.getenv("ARCGIS_PASSWORD")
-        self.profile = os.getenv("ARCGIS_PROFILE")
-        self.local_sync_dir = os.getenv("LOCAL_SYNC_DIR")
-        
-        if not self.local_sync_dir:
-            raise ValueError("LOCAL_SYNC_DIR no está configurado en el archivo .env")
+        config = load_config(Path(__file__).parent)
+
+        self.url = config.url
+        self.username = config.username
+        self.password = config.password
+        self.profile = config.profile
+        self.local_sync_dir = config.local_sync_dir
 
         self.gis = self._connect_to_arcgis()
         

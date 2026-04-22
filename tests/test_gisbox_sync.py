@@ -12,7 +12,7 @@ from gisbox_sync import GISBoxSync, logger
 @pytest.fixture
 def mock_env(mocker):
     # Mockear la carga de variables de entorno
-    mocker.patch('gisbox_sync.load_dotenv')
+    mocker.patch('gisbox_common.load_dotenv')
     mocker.patch.dict(os.environ, {
         "ARCGIS_URL": "https://test.arcgis.com",
         "ARCGIS_USERNAME": "test_user",
@@ -61,7 +61,7 @@ def test_gisbox_sync_initialization(mock_env, mock_gis_user):
 
 # Test 2: Error si LOCAL_SYNC_DIR no está configurado
 def test_gisbox_sync_no_sync_dir(mocker):
-    mocker.patch('gisbox_sync.load_dotenv')
+    mocker.patch('gisbox_common.load_dotenv')
     mocker.patch.dict(os.environ, {"LOCAL_SYNC_DIR": ""})
     with pytest.raises(ValueError, match="LOCAL_SYNC_DIR no está configurado"):
         GISBoxSync()
